@@ -1,6 +1,7 @@
 package com.dynamodb.curd.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,26 +16,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dynamodb.curd.entity.Employee;
-import com.dynamodb.curd.repository.EmployeeRepository;
+import com.dynamodb.curd.service.EmployeeService;
 
 @RestController
 @RequestMapping("/api/employee")
 public class EmployeeController {
 	
 	@Autowired
-	private EmployeeRepository employeeRepo;
+	private EmployeeService employeeRepo;
 	
 	
 	
 	 	@PostMapping
 	    public ResponseEntity<Employee> save(@RequestBody Employee emp) {
-	 		;
+	 		
 	        return new ResponseEntity<>(employeeRepo.addEmployee(emp),HttpStatus.CREATED);
 	    }
 
 	    @GetMapping("/{id}")
-	    public ResponseEntity<Employee> getById(@PathVariable String id) {
-	        return ResponseEntity.ok(employeeRepo.finfById(id));
+	    public Optional<Employee> getById(@PathVariable String id) {
+	        return employeeRepo.findEmployee(id);
 	    }
 
 	    @DeleteMapping("/{id}")
@@ -44,17 +45,14 @@ public class EmployeeController {
 	    }
 	    
 	    @PutMapping("/{id}")
-	    public ResponseEntity<String> updateEmployee(@PathVariable("id") String id, @RequestBody Employee emp) {
-	        try {
-	        	employeeRepo.updateEmployee(id, emp);
-	            return ResponseEntity.ok("Employee updated successfully.");
-	        } catch (RuntimeException ex) {
-	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-	        }
+	    public Employee updateEmployee(@PathVariable("id") String id, @RequestBody Employee emp) {
+	       
+	        	return employeeRepo.updateEmployee(id, emp);
+	           
 	    }
 	    
 	    @GetMapping
-	    public List<Employee> getAllEmployees() {
+	    public Iterable<Employee> getAllEmployees() {
 	        return employeeRepo.getAllEmployees();
 	    }
 
