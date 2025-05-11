@@ -1,6 +1,5 @@
 package com.dynamodb.curd.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -10,6 +9,8 @@ import com.dynamodb.curd.exception.EmployeeNotFound;
 import com.dynamodb.curd.repository.EmployeeRepository;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
+
 
 @Service
 @AllArgsConstructor
@@ -53,5 +54,11 @@ public class EmployeeService {
 	    public Iterable<Employee> getAllEmployees() {
 	        return  employeeRepo.findAll();  
 	    }
+	    
+	    
+	    public Iterable<Employee> getAllEmployeesSortedByJoiningDateDesc() {
+			Sort sort = Sort.by(Sort.Direction.DESC, "joindate");
+			return employeeRepo.findAll(sort);
+		}
 
 }
